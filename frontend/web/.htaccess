@@ -1,0 +1,57 @@
+Options -Indexes
+#no need to follow symbolic links in standard configuration
+#Options +FollowSymLinks
+DirectoryIndex index.php index.html index.htm
+
+<Files favicon.ico>
+        ErrorDocument 404 "The requested file favicon.ico was not found.
+</Files>
+
+<IfModule mod_rewrite.c>
+        RewriteEngine on
+	RewriteCond %{HTTPS} !^on$
+        RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]	
+
+        # hide directories that starts with a . (dot)
+        RewriteRule "(^|/)\.(?!htaccess)" - [F]
+
+        # Redirect to the www version of the site
+        #RewriteCond %{HTTP_HOST} !^www\. [NC]
+        #RewriteRule ^ http://www.%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+#	RewriteCond %{HTTP_HOST} ^cmt-online\.site [NC]
+#	RewriteCond %{HTTPS} off
+#	RewriteCond %{HTTPS} !^on$
+#	RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+        Header always set X-Frame-Options "sameorigin"
+</IfModule>
+
+<FilesMatch "\.(htpasswd|ini|php|fla|psd|log|sh)$">
+        Order Allow,Deny
+        Deny from all
+</FilesMatch>
+
+<FilesMatch "(composer\.(json|lock))$">
+        Order Allow,Deny
+        Deny from all
+</FilesMatch>
+
+<FilesMatch "((?i:readme)\.(?i:txt|md)|(?i:README))$">
+        Order Allow,Deny
+        Deny from all
+</FilesMatch>
+
+<FilesMatch "(index\.php|ajax\..*\.php|paypal\.php|cron\.php|tasks\.php|tinymce\.gzip\.php|index_tiny\.php|scormXmlTree\.php|soaplms\.php|scorm_page_body\.php|keep_alive\.php|text\.php|users\.php|write\.php|check\.php)$">
+        Order Allow,Deny
+        Allow from all
+</FilesMatch>
+
+#<IfModule mod_headers.c>
+#
+#     Header set X-Frame-Options “ALLOW-FROM https://www.cmt-online.site/”
+#
+#     <FilesMatch "\.(appcache|atom|bbaw|bmp|crx|css|cur|eot|f4[abpv]|flv|geojson|gif|htc|ico|jpe?g|js|json(ld)?|m4[av]|manifest|map|mp4|oex|og[agv]|opus|otf|pdf|png|rdf|rss|safariextz|svgz?|swf|topojson|tt[cf]|txt|vcard|vcf|vtt|webapp|web[mp]|webmanifest|woff2?|xloc|xml|xpi)$">
+#         Header unset X-Frame-Options
+#     </FilesMatch>
+
+#</IfModule>
